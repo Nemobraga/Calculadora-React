@@ -12,7 +12,7 @@ const App = () => {
   return (
     <Container>
       <Content>
-      <Input/>
+      <Input value={currentNumber}/>
 
       <Row>
       <Button label="x"/>
