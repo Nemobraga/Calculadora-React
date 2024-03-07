@@ -3,45 +3,119 @@ import Input from "./components/Input";
 import Button from "./components/Button";
 
 import { Container, Content, Row } from "./styles";
-import { useState } from "react";
+import React ,{ useState } from 'react';
+import styled from 'styled-components';
 
 
 
 const App = () => {
   const [currentNumber, setCurrentNumber] = useState('');
   const[ operation, setOperation]=useState('')
-  const [inputmostre, setInputMostre] = useState('');
+  const [arrayObjetos, setArrayObjetos] = useState([]);
   const [total, settotal] = useState('');
   const [firstNumber, setFirstNumber] = useState('');
+ 
+
+  const [formData, setFormData] = useState({
+    nome: '',
+    idade: ''
+  });
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    // Cria um novo objeto com os dados do formulário
+    const novoObjeto = {
+      nome: formData.nome,
+      idade: formData.idade
+    };
+
+    // Adiciona o novo objeto ao array
+    setArrayObjetos([...arrayObjetos, novoObjeto]);
+
+    // Limpa o formulário
+    setFormData({ nome: '', idade: '' });
+  };
+  
+
 
   const handleOnClear = () =>{
       setCurrentNumber('');
       setFirstNumber('');
       setOperation('');
-      setInputMostre('');
+      setArrayObjetos([]);
       settotal('0');
   }
   const handleAddNumber = (num) =>{
       setCurrentNumber(prev =>`${prev ==='' ? '':prev}${num}`)
   }   
 
+
   const handleSumNumbers = (num) =>{
-    if (firstNumber === ''){
+  
+    // if (firstNumber === ''){
+      
       setFirstNumber(String(currentNumber));
-      setInputMostre(String(currentNumber)+'+')
+       
+
+      const novoObjeto = {
+        num: String(currentNumber),
+        opr: '+',
+       };
+      
+      setArrayObjetos([...arrayObjetos, novoObjeto]);
+      
       setCurrentNumber('');  
-      setOperation('+');
-    }else{
-      const sum = Number(firstNumber)+ Number(currentNumber);
-      setCurrentNumber(String(sum)); 
-      setFirstNumber('');
-    }
+    
+       console.log(arrayObjetos)
+    // }else{
+    //   const sum = Number(firstNumber)+ Number(currentNumber);
+      
+    //   setCurrentNumber(String(sum)); 
+
+    //   const novoObjeto = {
+    //     nome: String(currentNumber),
+    //     idade: operation
+    //   };
+    //   setArrayObjetos([...arrayObjetos, novoObjeto]);
+    //   // setFirstNumber('');
+
+    //   // setInputMostre(prevState => ({...prevState, currentNumber}));
+
+
+      
+    //   console.log(arrayObjetos)
+    // }
   }
+
+
+  const handleOperation = (op) => {
+    console.log(op)
+    
+    setOperation(op)
+
+    switch(op){
+      case '+':
+        handleSumNumbers();
+        break;
+        default:
+          break; 
+      }
+    
+    
+    
+  };
+
 
   const handleMinusNumbers = (num) =>{
     if (firstNumber === ''){
       setFirstNumber(String(currentNumber));
-      setInputMostre(String(currentNumber)+'-') 
+      // setInputMostre(String(currentNumber)+'-') 
       setCurrentNumber(''); 
       setOperation('-');
     }else{
@@ -54,7 +128,7 @@ const App = () => {
   const handleDivNumbers = (num) =>{
     if (firstNumber === ''){
       setFirstNumber(String(currentNumber));
-      setInputMostre(String(currentNumber)+'/')
+      // setInputMostre(String(currentNumber)+'/')
       setCurrentNumber('');  
       setOperation('/');
     }else{
@@ -67,7 +141,7 @@ const App = () => {
   const handleMultNumbers = (num) =>{
     if (firstNumber === ''){
       setFirstNumber(Number(currentNumber));
-      setInputMostre(String(currentNumber)+'x') 
+      // setInputMostre(String(currentNumber)+'x') 
       setCurrentNumber(''); 
       setOperation('x');
     }else{
@@ -77,32 +151,44 @@ const App = () => {
     }
   }
 
-
-
    const handleEquals = () =>{
 
-    if(firstNumber !== '' && operation != '' && currentNumber != '' ){
+   for(var i =0; i>=arrayObjetos.length;i++){
+    console.log(i)
+   }
+    
       switch (operation){
         case '+':
+          
           handleSumNumbers();
-          setInputMostre('')
+          
+          const sum = Number(firstNumber)+ Number(currentNumber);
+      
+          setCurrentNumber(String(sum)); 
+
+          const novoObjeto = {
+            nome: String(currentNumber),
+            idade: operation
+          };
+          setArrayObjetos([...arrayObjetos, novoObjeto]);
+          
           break;
         case '-':
             handleMinusNumbers();
-            setInputMostre('')
+            // setInputMostre('')
             break;
         case 'x':
             handleMultNumbers();
-            setInputMostre('')
+            // setInputMostre('')
             break;
         case '/':
            handleDivNumbers();
-           setInputMostre('')
+          //  setInputMostre('')
             break;   
         default:
           break; 
       }
-    }
+    
 
 
   }
@@ -110,8 +196,8 @@ const App = () => {
   return (
     <Container>
       <Content>
-      <Input value={inputmostre + currentNumber }/>
- 
+      <Input value={arrayObjetos}/>
+      <Input value={currentNumber }/>
    
 
       <Row>
@@ -125,7 +211,7 @@ const App = () => {
       <Button label="4" onClick={() => handleAddNumber('4')}/>
       <Button label="5" onClick={() => handleAddNumber('5')}/>
       <Button label="6" onClick={() => handleAddNumber('6')}/>
-      <Button label="+" onClick={handleSumNumbers}/>
+      <Button label="+" onClick={() => handleOperation("+")}/>
       </Row>
 
       <Row>
